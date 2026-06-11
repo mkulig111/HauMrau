@@ -4,7 +4,7 @@ import { format, differenceInDays } from 'date-fns'
 import { Plus, FileText, Upload } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -204,6 +204,7 @@ export function HealthRecords() {
         </TabsContent>
       </Tabs>
 
+      {/* Add Record Dialog */}
       <Dialog open={addRecordOpen} onOpenChange={setAddRecordOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Dodaj rekord</DialogTitle></DialogHeader>
@@ -243,6 +244,7 @@ export function HealthRecords() {
         </DialogContent>
       </Dialog>
 
+      {/* Add Vaccination Dialog */}
       <Dialog open={addVacOpen} onOpenChange={setAddVacOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Dodaj szczepienie</DialogTitle></DialogHeader>
@@ -271,6 +273,7 @@ export function HealthRecords() {
         </DialogContent>
       </Dialog>
 
+      {/* Add Event Dialog */}
       <Dialog open={addEventOpen} onOpenChange={setAddEventOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Dodaj zdarzenie</DialogTitle></DialogHeader>
