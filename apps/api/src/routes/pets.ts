@@ -50,7 +50,7 @@ router.post('/', requireAuth, validate(createPetSchema), async (req: Request, re
 // GET /:id — get pet details
 router.get('/:id', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const pet = await petService.getPet(req.params['id']!, userId);
+  const pet = await petService.getPet(String(String(req.params['id'])), userId);
 
   if (!pet) {
     res.status(404).json({ error: 'Pet not found' });
@@ -65,7 +65,7 @@ router.patch('/:id', requireAuth, validate(updatePetSchema), async (req: Request
   const userId = req.user!.id;
   const body = req.body as z.infer<typeof updatePetSchema>;
 
-  const pet = await petService.updatePet(req.params['id']!, userId, {
+  const pet = await petService.updatePet(String(String(req.params['id'])), userId, {
     ...body,
     birthDate: body.birthDate ? new Date(body.birthDate) : undefined,
   });
@@ -81,7 +81,7 @@ router.patch('/:id', requireAuth, validate(updatePetSchema), async (req: Request
 // DELETE /:id — delete pet
 router.delete('/:id', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const deleted = await petService.deletePet(req.params['id']!, userId);
+  const deleted = await petService.deletePet(String(String(req.params['id'])), userId);
 
   if (!deleted) {
     res.status(404).json({ error: 'Pet not found' });
@@ -101,8 +101,8 @@ router.post('/:id/photo', requireAuth, upload.single('photo'), async (req: Reque
     return;
   }
 
-  const photoUrl = `/uploads/${userId}/${req.params['id']}/${file.filename}`;
-  const pet = await petService.updatePetPhoto(req.params['id']!, userId, photoUrl);
+  const photoUrl = `/uploads/${userId}/${String(req.params['id'])}/${file.filename}`;
+  const pet = await petService.updatePetPhoto(String(String(req.params['id'])), userId, photoUrl);
 
   if (!pet) {
     res.status(404).json({ error: 'Pet not found' });

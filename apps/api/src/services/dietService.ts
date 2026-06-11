@@ -1,5 +1,7 @@
 import { prisma } from '../lib/db';
-import { DietPlan, MealLog } from '@prisma/client';
+
+export type DietPlan = Awaited<ReturnType<typeof prisma.dietPlan.findFirstOrThrow>>;
+export type MealLog = Awaited<ReturnType<typeof prisma.mealLog.findFirstOrThrow>>;
 
 export interface CreateDietPlanData {
   targetKcal: number;

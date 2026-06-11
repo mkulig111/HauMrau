@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   destination: (req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     const uploadDir = process.env.UPLOAD_DIR ?? './uploads';
     const userId = req.user?.id ?? 'unknown';
-    const petId = req.params['id'] ?? 'unknown';
+    const petId = String(req.params['id'] ?? 'unknown');
     const dir = path.join(uploadDir, userId, petId);
 
     fs.mkdirSync(dir, { recursive: true });

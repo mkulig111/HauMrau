@@ -1,5 +1,6 @@
 import { prisma } from '../lib/db';
-import { WeightLog } from '@prisma/client';
+
+export type WeightLog = Awaited<ReturnType<typeof prisma.weightLog.findFirstOrThrow>>;
 
 export interface CreateWeightLogData {
   weightKg: number;

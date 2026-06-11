@@ -1,5 +1,6 @@
 import { prisma } from '../lib/db';
-import { Pet } from '@prisma/client';
+
+export type Pet = Awaited<ReturnType<typeof prisma.pet.findFirstOrThrow>>;
 
 export interface CreatePetData {
   name: string;

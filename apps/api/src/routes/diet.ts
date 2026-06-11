@@ -31,7 +31,7 @@ const activityFactorValues = ['neutered_indoor', 'intact_indoor', 'active', 'wei
 // GET /pets/:id/diet/plan
 router.get('/plan', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -51,7 +51,7 @@ router.get('/plan', requireAuth, async (req: Request, res: Response): Promise<vo
 // POST /pets/:id/diet/plan
 router.post('/plan', requireAuth, validate(dietPlanSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -72,7 +72,7 @@ router.post('/plan', requireAuth, validate(dietPlanSchema), async (req: Request,
 // GET /pets/:id/diet/log?date=YYYY-MM-DD
 router.get('/log', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -88,7 +88,7 @@ router.get('/log', requireAuth, async (req: Request, res: Response): Promise<voi
 // POST /pets/:id/diet/log
 router.post('/log', requireAuth, validate(mealLogSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -108,8 +108,8 @@ router.post('/log', requireAuth, validate(mealLogSchema), async (req: Request, r
 // DELETE /pets/:id/diet/log/:entryId
 router.delete('/log/:entryId', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
-  const entryId = req.params['entryId']!;
+  const petId = String(String(req.params['id']));
+  const entryId = String(String(req.params['entryId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -129,7 +129,7 @@ router.delete('/log/:entryId', requireAuth, async (req: Request, res: Response):
 // GET /pets/:id/diet/suggest
 router.get('/suggest', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {

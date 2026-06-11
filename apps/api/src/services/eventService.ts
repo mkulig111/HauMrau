@@ -1,5 +1,6 @@
 import { prisma } from '../lib/db';
-import { Event } from '@prisma/client';
+
+export type PetEvent = Awaited<ReturnType<typeof prisma.event.findFirstOrThrow>>;
 
 export interface CreateEventData {
   type: string;
@@ -25,7 +26,7 @@ export interface ListEventsOptions {
   limit?: number;
 }
 
-export async function listEvents(petId: string, options: ListEventsOptions = {}): Promise<Event[]> {
+export async function listEvents(petId: string, options: ListEventsOptions = {}): Promise<PetEvent[]> {
   const { upcoming = false, limit = 50 } = options;
 
   return prisma.event.findMany({
@@ -38,7 +39,7 @@ export async function listEvents(petId: string, options: ListEventsOptions = {})
   });
 }
 
-export async function createEvent(petId: string, data: CreateEventData): Promise<Event> {
+export async function createEvent(petId: string, data: CreateEventData): Promise<PetEvent> {
   return prisma.event.create({
     data: {
       petId,
@@ -47,7 +48,7 @@ export async function createEvent(petId: string, data: CreateEventData): Promise
   });
 }
 
-export async function updateEvent(eventId: string, petId: string, data: UpdateEventData): Promise<Event | null> {
+export async function updateEvent(eventId: string, petId: string, data: UpdateEventData): Promise<PetEvent | null> {
   const event = await prisma.event.findFirst({ where: { id: eventId, petId } });
   if (!event) return null;
 
@@ -65,7 +66,7 @@ export async function deleteEvent(eventId: string, petId: string): Promise<boole
   return true;
 }
 
-export async function getUpcomingReminders(): Promise<Event[]> {
+export async function getUpcomingReminders(): Promise<PetEvent[]> {
   const now = new Date();
   const inFifteenMinutes = new Date(now.getTime() + 15 * 60 * 1000);
 

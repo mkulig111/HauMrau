@@ -29,7 +29,7 @@ const updateEventSchema = z.object({
 // GET /pets/:id/events?upcoming=true&limit=10
 router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -47,7 +47,7 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
 // POST /pets/:id/events
 router.post('/', requireAuth, validate(createEventSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
+  const petId = String(String(req.params['id']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -68,8 +68,8 @@ router.post('/', requireAuth, validate(createEventSchema), async (req: Request, 
 // PATCH /pets/:id/events/:eventId
 router.patch('/:eventId', requireAuth, validate(updateEventSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
-  const eventId = req.params['eventId']!;
+  const petId = String(String(req.params['id']));
+  const eventId = String(String(req.params['eventId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -95,8 +95,8 @@ router.patch('/:eventId', requireAuth, validate(updateEventSchema), async (req: 
 // DELETE /pets/:id/events/:eventId
 router.delete('/:eventId', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = req.params['id']!;
-  const eventId = req.params['eventId']!;
+  const petId = String(String(req.params['id']));
+  const eventId = String(String(req.params['eventId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
