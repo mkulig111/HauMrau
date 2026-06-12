@@ -8,6 +8,7 @@ import { WeightHistory } from '@/pages/WeightHistory'
 import { DietPlan } from '@/pages/DietPlan'
 import { HealthRecords } from '@/pages/HealthRecords'
 import { Settings } from '@/pages/Settings'
+import { NewPet } from '@/pages/NewPet'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth()
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/pets/new" element={<ProtectedRoute><NewPet /></ProtectedRoute>} />
       <Route path="/pets/:id" element={<ProtectedRoute><PetProfile /></ProtectedRoute>} />
       <Route path="/pets/:id/weight" element={<ProtectedRoute><WeightHistory /></ProtectedRoute>} />
       <Route path="/pets/:id/diet" element={<ProtectedRoute><DietPlan /></ProtectedRoute>} />
