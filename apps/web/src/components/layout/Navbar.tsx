@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { PawPrint, LayoutDashboard, Settings, LogOut, User } from 'lucide-react'
+import { PawPrint, LayoutDashboard, Settings, LogOut, User, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -24,6 +24,12 @@ export function Navbar() {
             <Link to="/" className="flex items-center gap-1">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
+            </Link>
+          </Button>
+          <Button size="sm" asChild>
+            <Link to="/pets/new" className="flex items-center gap-1">
+              <Plus className="h-4 w-4" />
+              Dodaj zwierzę
             </Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
