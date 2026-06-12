@@ -8,10 +8,12 @@ interface WeightChartProps {
 }
 
 export function WeightChart({ entries, goalWeight }: WeightChartProps) {
-  const data = entries.map((e) => ({
-    date: format(new Date(e.loggedAt), 'dd.MM'),
-    weight: e.weightKg,
-  }))
+  const data = [...entries]
+    .sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime())
+    .map((e) => ({
+      date: format(new Date(e.loggedAt), 'dd.MM.yy'),
+      weight: e.weightKg,
+    }))
 
   if (data.length === 0) {
     return (
