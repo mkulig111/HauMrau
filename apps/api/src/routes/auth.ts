@@ -14,7 +14,7 @@ const REFRESH_TOKEN_EXPIRES_DAYS = 30;
 const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1).max(100),
-  password: z.string().min(8).max(128),
+  password: z.string().min(6).max(128),
 });
 
 const loginSchema = z.object({
