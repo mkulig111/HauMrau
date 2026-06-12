@@ -19,7 +19,7 @@ import { healthApi } from '@/lib/api'
 import { format as dateFnsFormat } from 'date-fns'
 
 export function Dashboard() {
-  const { data: pets = [], isLoading: petsLoading } = usePets()
+  const { data: pets = [], isLoading: petsLoading, isError: petsError } = usePets()
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null)
   const petId = selectedPetId ?? pets[0]?.id ?? ''
 
@@ -48,6 +48,18 @@ export function Dashboard() {
 
   if (petsLoading) {
     return <PageWrapper><div className="text-center py-20 text-muted-foreground">Ładowanie...</div></PageWrapper>
+  }
+
+  if (petsError) {
+    return (
+      <PageWrapper title="Dashboard">
+        <div className="text-center py-20">
+          <p className="text-destructive mb-2">Nie udało się załadować danych.</p>
+          <p className="text-muted-foreground text-sm mb-4">Sprawdź czy backend działa na porcie 3001.</p>
+          <Button onClick={() => window.location.reload()}>Odśwież</Button>
+        </div>
+      </PageWrapper>
+    )
   }
 
   if (pets.length === 0) {
