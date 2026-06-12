@@ -11,8 +11,8 @@ const createPetSchema = z.object({
   name: z.string().min(1).max(100),
   species: z.string().min(1).max(50),
   breed: z.string().max(100).optional(),
-  birthDate: z.string().datetime().optional(),
-  sex: z.enum(['male', 'female', 'unknown']),
+  birthDate: z.string().optional(),
+  sex: z.enum(['MALE', 'FEMALE']),
   neutered: z.boolean().optional().default(false),
   weightGoalKg: z.number().positive().optional(),
 });
@@ -21,8 +21,8 @@ const updatePetSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   species: z.string().min(1).max(50).optional(),
   breed: z.string().max(100).optional(),
-  birthDate: z.string().datetime().optional(),
-  sex: z.enum(['male', 'female', 'unknown']).optional(),
+  birthDate: z.string().optional(),
+  sex: z.enum(['MALE', 'FEMALE']).optional(),
   neutered: z.boolean().optional(),
   weightGoalKg: z.number().positive().optional(),
 });
