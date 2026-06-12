@@ -23,7 +23,8 @@ export function Dashboard() {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null)
   const petId = selectedPetId ?? pets[0]?.id ?? ''
 
-  const { data: weightEntries = [] } = useWeightLog(petId, { limit: 6 })
+  const { data: allWeightEntries = [] } = useWeightLog(petId)
+  const weightEntries = [...allWeightEntries].sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime()).slice(-6)
   const { data: events = [] } = useEvents(petId, { upcoming: true, limit: 3 })
   const { data: dietPlan } = useDietPlan(petId)
   const today = dateFnsFormat(new Date(), 'yyyy-MM-dd')

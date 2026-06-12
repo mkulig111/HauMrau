@@ -34,10 +34,11 @@ export function getEventUrgency(scheduledAt: Date): EventUrgency {
 
 export function weightTrend(entries: WeightLog[]): WeightTrend {
   if (entries.length < 2) return 'stable'
-  const last = entries[entries.length - 1].weightKg
-  const first = entries[0].weightKg
+  const sorted = [...entries].sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime())
+  const last = sorted[sorted.length - 1].weightKg
+  const first = sorted[0].weightKg
   const diff = last - first
-  if (Math.abs(diff) < 0.1) return 'stable'
+  if (Math.abs(diff) < 0.05) return 'stable'
   return diff < 0 ? 'losing' : 'gaining'
 }
 
