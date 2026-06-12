@@ -32,7 +32,7 @@ export async function getWeightHistory(
           }
         : {}),
     },
-    orderBy: { loggedAt: 'desc' },
+    orderBy: { loggedAt: 'asc' },
     take: limit,
   });
 }
