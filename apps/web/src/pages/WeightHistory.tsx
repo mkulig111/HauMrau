@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { format, subMonths, subYears } from 'date-fns'
-import { Trash2, Plus } from 'lucide-react'
+import { Trash2, Plus, Upload } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { WeightChart } from '@/components/weight/WeightChart'
 import { WeightEntryModal } from '@/components/weight/WeightEntryModal'
+import { ImportModal } from '@/components/import/ImportModal'
 import { usePet } from '@/hooks/usePets'
 import { useWeightLog, useDeleteWeight } from '@/hooks/useWeightLog'
 import { useToast } from '@/components/ui/use-toast'
 import { formatWeight, formatDate, weightTrend } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { useQueryClient } from '@tanstack/react-query'
 
 type Range = '1M' | '3M' | '6M' | '1R' | 'ALL'
 
@@ -21,8 +23,10 @@ export function WeightHistory() {
   const { data: pet } = usePet(petId)
   const [range, setRange] = useState<Range>('3M')
   const [addOpen, setAddOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
   const { toast } = useToast()
   const { mutateAsync: deleteEntry } = useDeleteWeight(petId)
+  const queryClient = useQueryClient()
 
   const fromDate = (() => {
     const now = new Date()
@@ -57,10 +61,16 @@ export function WeightHistory() {
             {last && <span className="text-2xl font-bold">{formatWeight(last.weightKg)}</span>}
             <Badge variant={trendVariant as Parameters<typeof Badge>[0]['variant']}>{trendLabel}</Badge>
           </div>
-          <Button onClick={() => setAddOpen(true)}>
-            <Plus className="h-4 w-4 mr-1" />
-            Dodaj pomiar
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setImportOpen(true)}>
+              <Upload className="h-4 w-4 mr-1" />
+              Importuj CSV
+            </Button>
+            <Button onClick={() => setAddOpen(true)}>
+              <Plus className="h-4 w-4 mr-1" />
+              Dodaj pomiar
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -120,6 +130,13 @@ export function WeightHistory() {
         </Card>
 
         <WeightEntryModal petId={petId} open={addOpen} onOpenChange={setAddOpen} />
+        <ImportModal
+          petId={petId}
+          type="weight"
+          open={importOpen}
+          onClose={() => setImportOpen(false)}
+          onSuccess={() => queryClient.invalidateQueries({ queryKey: ['weight', petId] })}
+        />
       </div>
     </PageWrapper>
   )

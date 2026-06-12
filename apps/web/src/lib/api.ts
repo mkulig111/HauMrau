@@ -131,4 +131,21 @@ export const healthApi = {
     api.patch<Vaccination>(`/pets/${petId}/vaccinations/${vacId}`, data).then((r) => r.data),
 }
 
+export const importApi = {
+  importWeight: (petId: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return api.post<{ imported: number; skipped: number; errors: string[] }>(
+      `/pets/${petId}/weight/import`, form
+    ).then(r => r.data)
+  },
+  importEvents: (petId: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return api.post<{ imported: number; skipped: number; errors: string[] }>(
+      `/pets/${petId}/events/import`, form
+    ).then(r => r.data)
+  },
+}
+
 export default api

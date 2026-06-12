@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { format, differenceInDays } from 'date-fns'
-import { Plus, FileText, Upload } from 'lucide-react'
+import { Plus, FileText, Upload, Download } from 'lucide-react'
+import { ImportModal } from '@/components/import/ImportModal'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -51,6 +52,7 @@ export function HealthRecords() {
   const [addRecordOpen, setAddRecordOpen] = useState(false)
   const [addVacOpen, setAddVacOpen] = useState(false)
   const [addEventOpen, setAddEventOpen] = useState(false)
+  const [importEventsOpen, setImportEventsOpen] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const [recordForm, setRecordForm] = useState({ title: '', type: 'NOTE' as HealthRecordType, description: '' })
