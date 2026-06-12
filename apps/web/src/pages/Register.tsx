@@ -53,7 +53,7 @@ export function Register() {
             <PawPrint className="h-10 w-10 text-primary" />
           </div>
           <CardTitle className="text-2xl">Zarejestruj się</CardTitle>
-          <CardDescription>Utwórz nowe konto PetCare</CardDescription>
+          <CardDescription>Utwórz nowe konto HauMrau</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
