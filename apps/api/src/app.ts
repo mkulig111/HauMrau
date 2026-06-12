@@ -44,10 +44,10 @@ const authLimiter = rateLimit({
 // Mount routes
 app.use('/api/v1/auth', authLimiter, authRouter);
 app.use('/api/v1/pets', petsRouter);
-app.use('/api/v1/pets/:id/weight', weightRouter);
-app.use('/api/v1/pets/:id/diet', dietRouter);
-app.use('/api/v1/pets/:id/events', eventsRouter);
-app.use('/api/v1/pets/:id/health', healthRouter);
+app.use('/api/v1/pets/:petId/weight', weightRouter);
+app.use('/api/v1/pets/:petId/diet', dietRouter);
+app.use('/api/v1/pets/:petId/events', eventsRouter);
+app.use('/api/v1/pets/:petId/health', healthRouter);
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {

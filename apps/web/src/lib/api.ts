@@ -124,11 +124,11 @@ export const healthApi = {
   addRecord: (petId: string, data: FormData) =>
     api.post<HealthRecord>(`/pets/${petId}/health`, data).then((r) => r.data),
   listVaccinations: (petId: string) =>
-    api.get<Vaccination[]>(`/pets/${petId}/vaccinations`).then((r) => r.data),
+    api.get<Vaccination[]>(`/pets/${petId}/health/vaccinations`).then((r) => r.data),
   addVaccination: (petId: string, data: Omit<Vaccination, 'id' | 'petId'>) =>
-    api.post<Vaccination>(`/pets/${petId}/vaccinations`, data).then((r) => r.data),
+    api.post<Vaccination>(`/pets/${petId}/health/vaccinations`, data).then((r) => r.data),
   updateVaccination: (petId: string, vacId: string, data: Partial<Vaccination>) =>
-    api.patch<Vaccination>(`/pets/${petId}/vaccinations/${vacId}`, data).then((r) => r.data),
+    api.patch<Vaccination>(`/pets/${petId}/health/vaccinations/${vacId}`, data).then((r) => r.data),
 }
 
 export const importApi = {

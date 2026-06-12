@@ -19,7 +19,7 @@ const addWeightSchema = z.object({
 // GET /pets/:id/weight
 router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -41,7 +41,7 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
 // POST /pets/:id/weight
 router.post('/', requireAuth, validate(addWeightSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -61,7 +61,7 @@ router.post('/', requireAuth, validate(addWeightSchema), async (req: Request, re
 // POST /pets/:id/weight/import
 router.post('/import', requireAuth, memUpload.single('file'), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(req.params['id']);
+  const petId = String(req.params['petId']);
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -119,7 +119,7 @@ router.post('/import', requireAuth, memUpload.single('file'), async (req: Reques
 // DELETE /pets/:id/weight/:entryId
 router.delete('/:entryId', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
   const entryId = String(String(req.params['entryId']));
 
   const pet = await getPet(petId, userId);

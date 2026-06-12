@@ -54,7 +54,7 @@ const updateEventSchema = z.object({
 // GET /pets/:id/events?upcoming=true&limit=10
 router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -72,7 +72,7 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
 // POST /pets/:id/events
 router.post('/', requireAuth, validate(createEventSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -93,7 +93,7 @@ router.post('/', requireAuth, validate(createEventSchema), async (req: Request, 
 // PATCH /pets/:id/events/:eventId
 router.patch('/:eventId', requireAuth, validate(updateEventSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
   const eventId = String(String(req.params['eventId']));
 
   const pet = await getPet(petId, userId);
@@ -120,7 +120,7 @@ router.patch('/:eventId', requireAuth, validate(updateEventSchema), async (req: 
 // POST /pets/:id/events/import
 router.post('/import', requireAuth, memUpload.single('file'), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(req.params['id']);
+  const petId = String(req.params['petId']);
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -193,7 +193,7 @@ router.post('/import', requireAuth, memUpload.single('file'), async (req: Reques
 // DELETE /pets/:id/events/:eventId
 router.delete('/:eventId', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
   const eventId = String(String(req.params['eventId']));
 
   const pet = await getPet(petId, userId);

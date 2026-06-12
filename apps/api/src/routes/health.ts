@@ -35,7 +35,7 @@ const updateVaccinationSchema = z.object({
 // GET /pets/:id/health
 router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -54,7 +54,7 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
 // POST /pets/:id/health
 router.post('/', requireAuth, upload.single('file'), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -91,7 +91,7 @@ router.post('/', requireAuth, upload.single('file'), async (req: Request, res: R
 // GET /pets/:id/vaccinations
 router.get('/vaccinations', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -110,7 +110,7 @@ router.get('/vaccinations', requireAuth, async (req: Request, res: Response): Pr
 // POST /pets/:id/vaccinations
 router.post('/vaccinations', requireAuth, validate(createVaccinationSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
 
   const pet = await getPet(petId, userId);
   if (!pet) {
@@ -136,7 +136,7 @@ router.post('/vaccinations', requireAuth, validate(createVaccinationSchema), asy
 // PATCH /pets/:id/vaccinations/:vacId
 router.patch('/vaccinations/:vacId', requireAuth, validate(updateVaccinationSchema), async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.id;
-  const petId = String(String(req.params['id']));
+  const petId = String(String(req.params['petId']));
   const vacId = String(String(req.params['vacId']));
 
   const pet = await getPet(petId, userId);
