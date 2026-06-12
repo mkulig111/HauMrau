@@ -49,7 +49,7 @@ async function seedWeight() {
   if (!pet) {
     console.error('Nie znaleziono zwierzęcia o imieniu Felinek. Dostępne zwierzęta:');
     const all = await prisma.pet.findMany({ select: { name: true, id: true } });
-    all.forEach(p => console.log(` - ${p.name} (${p.id})`));
+    all.forEach((p: { name: string; id: string }) => console.log(` - ${p.name} (${p.id})`));
     process.exit(1);
   }
 
