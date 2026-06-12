@@ -193,9 +193,14 @@ export function HealthRecords() {
         <TabsContent value="events">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Zdarzenia ({events.length})</h2>
-            <Button size="sm" onClick={() => setAddEventOpen(true)}>
-              <Plus className="h-4 w-4 mr-1" />Dodaj zdarzenie
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => setImportEventsOpen(true)}>
+                <Upload className="h-4 w-4 mr-1" />Importuj CSV
+              </Button>
+              <Button size="sm" onClick={() => setAddEventOpen(true)}>
+                <Plus className="h-4 w-4 mr-1" />Dodaj zdarzenie
+              </Button>
+            </div>
           </div>
           <div className="space-y-3">
             {events.map((e) => (
@@ -274,6 +279,15 @@ export function HealthRecords() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Import Events Modal */}
+      <ImportModal
+        petId={petId}
+        type="events"
+        open={importEventsOpen}
+        onClose={() => setImportEventsOpen(false)}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ['events', petId] })}
+      />
 
       {/* Add Event Dialog */}
       <Dialog open={addEventOpen} onOpenChange={setAddEventOpen}>
