@@ -3,7 +3,6 @@ import { Camera } from 'lucide-react'
 import { PetAvatar } from './PetAvatar'
 import { cn } from '@/lib/utils'
 import { useUploadPetPhoto } from '@/hooks/usePets'
-import { useQueryClient } from '@tanstack/react-query'
 import type { Pet } from '@/types'
 
 interface PetSelectorProps {
@@ -15,14 +14,11 @@ interface PetSelectorProps {
 function PetAvatarUpload({ pet, isSelected }: { pet: Pet; isSelected: boolean }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const { mutate: uploadPhoto, isPending } = useUploadPetPhoto(pet.id)
-  const queryClient = useQueryClient()
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    uploadPhoto(file, {
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pets'] }),
-    })
+    uploadPhoto(file)
     e.target.value = ''
   }
 

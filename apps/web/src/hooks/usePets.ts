@@ -53,7 +53,7 @@ export function useUploadPetPhoto(id: string) {
   return useMutation({
     mutationFn: (file: File) => petsApi.uploadPhoto(id, file),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pets', id] })
+      queryClient.invalidateQueries({ queryKey: ['pets'] })
     },
   })
 }
