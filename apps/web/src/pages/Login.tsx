@@ -50,7 +50,7 @@ export function Login() {
         border: '1px solid rgba(255,255,255,0.8)',
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <span style={{ fontSize: '48px', display: 'block', marginBottom: '12px' }}>🐾</span>
+          <img src="/logo.svg" alt="HauMrau" style={{ width: '80px', height: '80px', display: 'block', margin: '0 auto 12px' }} />
           <div style={{
             fontSize: '26px',
             fontWeight: 900,

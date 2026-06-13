@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Ears -->
+  <path d="M22 42 C22 42 18 18 36 20 C44 24 44 40 44 40Z" fill="#E8737A" stroke="#3d3d5c" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M98 42 C98 42 102 18 84 20 C76 24 76 40 76 40Z" fill="#E8737A" stroke="#3d3d5c" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Inner ears -->
+  <path d="M28 38 C28 38 26 24 36 25 C41 27 41 37 41 37Z" fill="#f5a0a5" opacity="0.7"/>
+  <path d="M92 38 C92 38 94 24 84 25 C79 27 79 37 79 37Z" fill="#f5a0a5" opacity="0.7"/>
+  <!-- Face -->
+  <circle cx="60" cy="65" r="46" fill="#E8737A" stroke="#3d3d5c" stroke-width="2.5"/>
+  <!-- Cheeks -->
+  <circle cx="35" cy="72" r="10" fill="#f5a0a5" opacity="0.5"/>
+  <circle cx="85" cy="72" r="10" fill="#f5a0a5" opacity="0.5"/>
+  <!-- Eyes -->
+  <circle cx="44" cy="58" r="7" fill="#3d3d5c"/>
+  <circle cx="76" cy="58" r="7" fill="#3d3d5c"/>
+  <circle cx="46" cy="56" r="2.5" fill="white"/>
+  <circle cx="78" cy="56" r="2.5" fill="white"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="72" rx="3.5" ry="2.5" fill="#3d3d5c"/>
+  <!-- Mouth -->
+  <path d="M60 74.5 Q54 80 50 78" stroke="#3d3d5c" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M60 74.5 Q66 80 70 78" stroke="#3d3d5c" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Whiskers left -->
+  <line x1="20" y1="70" x2="48" y2="73" stroke="#3d3d5c" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="18" y1="76" x2="47" y2="76" stroke="#3d3d5c" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Whiskers right -->
+  <line x1="100" y1="70" x2="72" y2="73" stroke="#3d3d5c" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="102" y1="76" x2="73" y2="76" stroke="#3d3d5c" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Paws -->
+  <ellipse cx="42" cy="108" rx="16" ry="10" fill="#E8737A" stroke="#3d3d5c" stroke-width="2.5"/>
+  <ellipse cx="78" cy="108" rx="16" ry="10" fill="#E8737A" stroke="#3d3d5c" stroke-width="2.5"/>
+  <!-- Paw toes left -->
+  <ellipse cx="32" cy="103" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+  <ellipse cx="42" cy="100" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+  <ellipse cx="52" cy="103" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+  <!-- Paw toes right -->
+  <ellipse cx="68" cy="103" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+  <ellipse cx="78" cy="100" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+  <ellipse cx="88" cy="103" rx="5" ry="4" fill="#E8737A" stroke="#3d3d5c" stroke-width="2"/>
+</svg>
