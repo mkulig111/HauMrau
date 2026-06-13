@@ -13,7 +13,8 @@ RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY src/prisma ./src/prisma
+COPY --from=builder /app/src/prisma ./src/prisma
+RUN echo "Migrations:" && ls src/prisma/migrations/
 
 EXPOSE 3001
 CMD ["sh", "-c", "npx prisma migrate deploy --schema=src/prisma/schema.prisma && node dist/app.js"]
