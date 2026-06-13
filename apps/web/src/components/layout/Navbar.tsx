@@ -1,25 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Settings, LogOut, User, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { LogOut, Plus } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-
-function PawsLogo() {
-  return (
-    <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Cat paw - left */}
-      <ellipse cx="7" cy="14" rx="4.5" ry="5.5" fill="currentColor" opacity="0.9"/>
-      <ellipse cx="3" cy="9" rx="1.8" ry="2.2" fill="currentColor" opacity="0.9"/>
-      <ellipse cx="7" cy="7.5" rx="1.8" ry="2.2" fill="currentColor" opacity="0.9"/>
-      <ellipse cx="11" cy="9" rx="1.8" ry="2.2" fill="currentColor" opacity="0.9"/>
-      {/* Dog paw - right */}
-      <ellipse cx="27" cy="14" rx="5" ry="6" fill="currentColor" opacity="0.7"/>
-      <ellipse cx="22" cy="9" rx="2" ry="2.5" fill="currentColor" opacity="0.7"/>
-      <ellipse cx="27" cy="7" rx="2" ry="2.5" fill="currentColor" opacity="0.7"/>
-      <ellipse cx="32" cy="9" rx="2" ry="2.5" fill="currentColor" opacity="0.7"/>
-      <ellipse cx="35" cy="13" rx="1.6" ry="2" fill="currentColor" opacity="0.7"/>
-    </svg>
-  )
-}
 
 export function Navbar() {
   const { user, logout } = useAuth()
@@ -30,44 +11,105 @@ export function Navbar() {
     navigate('/login')
   }
 
+  const initials = user?.name
+    ? user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+    : '?'
+
   return (
-    <nav className="border-b bg-background sticky top-0 z-40">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <PawsLogo />
-          HauMrau
+    <nav style={{
+      background: 'rgba(255,255,255,0.85)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      borderBottom: '1px solid rgba(0,0,0,0.06)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 40,
+      height: '58px',
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0 24px',
+      justifyContent: 'space-between',
+    }}>
+      <Link to="/" style={{
+        fontWeight: 900,
+        fontSize: '20px',
+        background: 'linear-gradient(135deg,#a855f7,#6366f1)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        textDecoration: 'none',
+      }}>
+        🐾 HauMrau
+      </Link>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <Link to="/" style={{
+          padding: '6px 14px',
+          borderRadius: '8px',
+          border: '1px solid transparent',
+          background: 'transparent',
+          color: '#64748b',
+          fontSize: '13px',
+          fontWeight: 500,
+          textDecoration: 'none',
+        }}>
+          Dashboard
         </Link>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/" className="flex items-center gap-1">
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link to="/pets/new" className="flex items-center gap-1">
-              <Plus className="h-4 w-4" />
-              Dodaj zwierzę
-            </Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/settings" className="flex items-center gap-1">
-              <Settings className="h-4 w-4" />
-              Ustawienia
-            </Link>
-          </Button>
-          {user && (
-            <div className="flex items-center gap-2 ml-2 pl-2 border-l">
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <User className="h-4 w-4" />
-                {user.name}
-              </span>
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Wyloguj">
-                <LogOut className="h-4 w-4" />
-              </Button>
+
+        <Link to="/pets/new" style={{
+          padding: '7px 16px',
+          borderRadius: '10px',
+          background: 'linear-gradient(135deg,#a855f7,#6366f1)',
+          color: '#fff',
+          fontSize: '13px',
+          fontWeight: 600,
+          textDecoration: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          boxShadow: '0 3px 10px rgba(168,85,247,.3)',
+        }}>
+          <Plus size={14} /> Dodaj zwierzę
+        </Link>
+
+        {user && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            paddingLeft: '12px',
+            borderLeft: '1px solid #e0e7ff',
+            marginLeft: '6px',
+          }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '99px',
+              background: 'linear-gradient(135deg,#a855f7,#6366f1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+              fontSize: '13px',
+              fontWeight: 700,
+            }}>
+              {initials}
             </div>
-          )}
-        </div>
+            <button onClick={handleLogout} title="Wyloguj" style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#94a3b8',
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+              <LogOut size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   )

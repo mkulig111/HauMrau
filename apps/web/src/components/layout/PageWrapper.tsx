@@ -9,10 +9,18 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children, title }: PageWrapperProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div style={{ minHeight: '100vh' }}>
       <Navbar />
-      <main className="container mx-auto py-6 px-4">
-        {title && <h1 className="text-3xl font-bold mb-6">{title}</h1>}
+      <main style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 20px' }}>
+        {title && (
+          <h1 style={{
+            fontSize: '26px',
+            fontWeight: 900,
+            color: '#1e1b4b',
+            letterSpacing: '-0.02em',
+            marginBottom: '24px',
+          }}>{title}</h1>
+        )}
         {children}
       </main>
       <Toaster />
