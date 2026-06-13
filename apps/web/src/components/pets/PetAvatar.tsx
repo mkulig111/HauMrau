@@ -15,6 +15,13 @@ interface PetAvatarProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
+function resolvePhotoUrl(photoUrl: string): string {
+  if (photoUrl.startsWith('http')) return photoUrl
+  const base = (import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api/v1')
+    .replace('/api/v1', '')
+  return `${base}${photoUrl}`
+}
+
 export function PetAvatar({ photoUrl, species, name, size = 'md' }: PetAvatarProps) {
   const sizeClasses = {
     sm: 'h-8 w-8 text-lg',
@@ -25,7 +32,7 @@ export function PetAvatar({ photoUrl, species, name, size = 'md' }: PetAvatarPro
   if (photoUrl) {
     return (
       <img
-        src={photoUrl}
+        src={resolvePhotoUrl(photoUrl)}
         alt={name}
         className={`${sizeClasses[size]} rounded-full object-cover border-2 border-border`}
       />
@@ -40,3 +47,4 @@ export function PetAvatar({ photoUrl, species, name, size = 'md' }: PetAvatarPro
     </div>
   )
 }
+
