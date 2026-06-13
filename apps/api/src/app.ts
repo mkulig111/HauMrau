@@ -17,6 +17,9 @@ import { startNotificationScheduler } from './services/notificationService';
 
 const app = express();
 
+// Trust Railway's proxy
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
