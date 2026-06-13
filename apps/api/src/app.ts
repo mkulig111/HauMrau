@@ -12,6 +12,7 @@ import weightRouter from './routes/weight';
 import dietRouter from './routes/diet';
 import eventsRouter from './routes/events';
 import healthRouter from './routes/health';
+import householdRouter from './routes/household';
 import { startNotificationScheduler } from './services/notificationService';
 
 const app = express();
@@ -28,9 +29,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static file serving for uploads
+// Static file serving for uploads (cross-origin allowed for images)
 const uploadDir = process.env.UPLOAD_DIR ?? './uploads';
-app.use('/uploads', express.static(path.resolve(uploadDir)));
+app.use('/uploads', (_req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(path.resolve(uploadDir)));
 
 // Rate limiting for auth routes
 const authLimiter = rateLimit({
@@ -48,6 +52,7 @@ app.use('/api/v1/pets/:petId/weight', weightRouter);
 app.use('/api/v1/pets/:petId/diet', dietRouter);
 app.use('/api/v1/pets/:petId/events', eventsRouter);
 app.use('/api/v1/pets/:petId/health', healthRouter);
+app.use('/api/v1/household', householdRouter);
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {

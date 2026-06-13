@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import type {
   Pet, WeightLog, DietPlan, MealLog, PetEvent, Vaccination, HealthRecord,
-  AuthTokens, CaloriesSuggestion, ActivityFactor
+  AuthTokens, CaloriesSuggestion, ActivityFactor, Household
 } from '../types'
 
 const api = axios.create({
@@ -71,9 +71,9 @@ export const authApi = {
 export const petsApi = {
   list: () => api.get<Pet[]>('/pets').then((r) => r.data),
   get: (id: string) => api.get<Pet>(`/pets/${id}`).then((r) => r.data),
-  create: (data: Omit<Pet, 'id' | 'userId' | 'createdAt'>) =>
+  create: (data: Omit<Pet, 'id' | 'householdId' | 'createdAt'>) =>
     api.post<Pet>('/pets', data).then((r) => r.data),
-  update: (id: string, data: Partial<Omit<Pet, 'id' | 'userId' | 'createdAt'>>) =>
+  update: (id: string, data: Partial<Omit<Pet, 'id' | 'householdId' | 'createdAt'>>) =>
     api.patch<Pet>(`/pets/${id}`, data).then((r) => r.data),
   delete: (id: string) => api.delete(`/pets/${id}`),
   uploadPhoto: (id: string, file: File) => {
@@ -129,6 +129,15 @@ export const healthApi = {
     api.post<Vaccination>(`/pets/${petId}/health/vaccinations`, data).then((r) => r.data),
   updateVaccination: (petId: string, vacId: string, data: Partial<Vaccination>) =>
     api.patch<Vaccination>(`/pets/${petId}/health/vaccinations/${vacId}`, data).then((r) => r.data),
+}
+
+export const householdApi = {
+  list: () => api.get<Household[]>('/household').then((r) => r.data),
+  generateInvite: (householdId: string) =>
+    api.post<{ code: string; expiresAt: string }>('/household/invite', { householdId }).then((r) => r.data),
+  join: (code: string) =>
+    api.post<Household>('/household/join', { code }).then((r) => r.data),
+  leave: (householdId: string) => api.delete(`/household/${householdId}/leave`),
 }
 
 export const importApi = {

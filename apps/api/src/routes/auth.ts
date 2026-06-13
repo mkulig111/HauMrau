@@ -58,8 +58,13 @@ router.post('/register', validate(registerSchema), async (req: Request, res: Res
   }
 
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-  const user = await prisma.user.create({
-    data: { email, name, passwordHash },
+  const user = await prisma.$transaction(async (tx) => {
+    const newUser = await tx.user.create({ data: { email, name, passwordHash } });
+    const household = await tx.household.create({ data: { name: `${name}'s Household` } });
+    await tx.householdMember.create({
+      data: { householdId: household.id, userId: newUser.id, role: 'OWNER' },
+    });
+    return newUser;
   });
 
   const accessToken = generateAccessToken(user.id, user.email);
