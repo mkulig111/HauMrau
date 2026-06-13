@@ -89,12 +89,12 @@ export function Dashboard() {
 
         {/* Metric cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Waga</CardTitle>
               <Scale className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold">
                   {lastWeight ? formatWeight(lastWeight.weightKg) : '–'}
@@ -113,18 +113,20 @@ export function Dashboard() {
                   Cel: {formatWeight(selectedPet.weightGoalKg)}
                 </p>
               )}
-              <Button variant="link" size="sm" className="px-0 mt-1" asChild>
-                <Link to={`/pets/${petId}/weight`}>Historia wagi</Link>
-              </Button>
+              <div className="mt-auto pt-2">
+                <Button variant="link" size="sm" className="px-0" asChild>
+                  <Link to={`/pets/${petId}/weight`}>Historia wagi</Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Następne zdarzenie</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-1">
               {nextEvent ? (
                 <>
                   <p className="font-semibold truncate">{nextEvent.title}</p>
@@ -138,18 +140,20 @@ export function Dashboard() {
               ) : (
                 <p className="text-muted-foreground text-sm">Brak zaplanowanych zdarzeń</p>
               )}
-              <Button variant="link" size="sm" className="px-0 mt-1" asChild>
-                <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
-              </Button>
+              <div className="mt-auto pt-2">
+                <Button variant="link" size="sm" className="px-0" asChild>
+                  <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Szczepienia</CardTitle>
               <Syringe className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-1">
               <p className="text-2xl font-bold">{vaccinations.length}</p>
               {expiringVaccinations.length > 0 ? (
                 <p className="text-xs text-orange-600 font-medium">
@@ -158,9 +162,11 @@ export function Dashboard() {
               ) : (
                 <p className="text-xs text-green-600">Wszystkie aktualne</p>
               )}
-              <Button variant="link" size="sm" className="px-0 mt-1" asChild>
-                <Link to={`/pets/${petId}/health`}>Szczepienia</Link>
-              </Button>
+              <div className="mt-auto pt-2">
+                <Button variant="link" size="sm" className="px-0" asChild>
+                  <Link to={`/pets/${petId}/health`}>Szczepienia</Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
