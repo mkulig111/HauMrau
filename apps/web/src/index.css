@@ -32,6 +32,7 @@
     @apply border-border;
   }
   body {
+    font-family: 'Nunito', system-ui, sans-serif;
     background: linear-gradient(135deg, #fdf4ff 0%, #eff6ff 50%, #f0fdf4 100%);
     min-height: 100vh;
     @apply text-foreground;
