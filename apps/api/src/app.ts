@@ -14,6 +14,7 @@ import eventsRouter from './routes/events';
 import healthRouter from './routes/health';
 import householdRouter from './routes/household';
 import { startNotificationScheduler } from './services/notificationService';
+import { ensureHouseholdSchema } from './lib/ensureHousehold';
 
 const app = express();
 
@@ -89,8 +90,9 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // Start server
 const PORT = parseInt(process.env.PORT ?? '3001', 10);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`[Server] PetCare API running on port ${PORT}`);
+  await ensureHouseholdSchema();
   startNotificationScheduler();
 });
 
