@@ -35,7 +35,7 @@ router.post('/join', requireAuth, validate(z.object({ code: z.string().min(1) })
 // DELETE /:householdId/leave — leave a household
 router.delete('/:householdId/leave', requireAuth, async (req: Request, res: Response): Promise<void> => {
   try {
-    await householdService.leaveHousehold(req.user!.id, req.params['householdId']);
+    await householdService.leaveHousehold(req.user!.id, String(req.params['householdId']));
     res.status(204).send();
   } catch (err: unknown) {
     res.status(400).json({ error: (err as Error).message });
