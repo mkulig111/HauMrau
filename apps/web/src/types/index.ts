@@ -14,25 +14,9 @@ export interface User {
   createdAt: string
 }
 
-export interface HouseholdMember {
-  id: string
-  userId: string
-  role: 'OWNER' | 'MEMBER'
-  joinedAt: string
-  user: { id: string; name: string; email: string }
-}
-
-export interface Household {
-  id: string
-  name: string
-  createdAt: string
-  role: 'OWNER' | 'MEMBER'
-  members: HouseholdMember[]
-}
-
 export interface Pet {
   id: string
-  householdId: string
+  userId: string
   name: string
   species: Species
   breed?: string

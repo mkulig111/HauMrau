@@ -23,57 +23,30 @@ export interface UpdatePetData {
   photoUrl?: string;
 }
 
-async function getUserHouseholdIds(userId: string): Promise<string[]> {
-  const memberships = await prisma.householdMember.findMany({
-    where: { userId },
-    select: { householdId: true },
-  });
-  return memberships.map((m) => m.householdId);
-}
-
-async function getUserPrimaryHouseholdId(userId: string): Promise<string | null> {
-  const owned = await prisma.householdMember.findFirst({
-    where: { userId, role: 'OWNER' },
-    select: { householdId: true },
-  });
-  if (owned) return owned.householdId;
-
-  const any = await prisma.householdMember.findFirst({
-    where: { userId },
-    select: { householdId: true },
-  });
-  return any?.householdId ?? null;
-}
-
 export async function listPets(userId: string): Promise<Pet[]> {
-  const householdIds = await getUserHouseholdIds(userId);
   return prisma.pet.findMany({
-    where: { householdId: { in: householdIds } },
+    where: { userId },
     orderBy: { createdAt: 'asc' },
   });
 }
 
 export async function getPet(id: string, userId: string): Promise<Pet | null> {
-  const householdIds = await getUserHouseholdIds(userId);
   return prisma.pet.findFirst({
-    where: { id, householdId: { in: householdIds } },
+    where: { id, userId },
   });
 }
 
 export async function createPet(userId: string, data: CreatePetData): Promise<Pet> {
-  const householdId = await getUserPrimaryHouseholdId(userId);
-  if (!householdId) throw new Error('User has no household');
-
   return prisma.pet.create({
     data: {
       ...data,
-      householdId,
+      userId,
     },
   });
 }
 
 export async function updatePet(id: string, userId: string, data: UpdatePetData): Promise<Pet | null> {
-  const pet = await getPet(id, userId);
+  const pet = await prisma.pet.findFirst({ where: { id, userId } });
   if (!pet) return null;
 
   return prisma.pet.update({
@@ -83,7 +56,7 @@ export async function updatePet(id: string, userId: string, data: UpdatePetData)
 }
 
 export async function deletePet(id: string, userId: string): Promise<boolean> {
-  const pet = await getPet(id, userId);
+  const pet = await prisma.pet.findFirst({ where: { id, userId } });
   if (!pet) return false;
 
   await prisma.pet.delete({ where: { id } });
@@ -91,7 +64,7 @@ export async function deletePet(id: string, userId: string): Promise<boolean> {
 }
 
 export async function updatePetPhoto(id: string, userId: string, photoUrl: string): Promise<Pet | null> {
-  const pet = await getPet(id, userId);
+  const pet = await prisma.pet.findFirst({ where: { id, userId } });
   if (!pet) return null;
 
   return prisma.pet.update({
