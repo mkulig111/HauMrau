@@ -11,10 +11,12 @@ import { useHouseholds, useGenerateInvite, useJoinHousehold, useLeaveHousehold }
 export function Settings() {
   const { user } = useAuth()
   const { toast } = useToast()
+  const [name] = useState(user?.name ?? '')
+  const [email] = useState(user?.email ?? '')
   const [joinCode, setJoinCode] = useState('')
-  const [inviteCodes, setInviteCodes] = useState<Record<string, string>>({})
+  const [inviteCodes, setInviteCodes] = useState<Record<string, { code: string; expiresAt: string }>>({})
 
-  const { data: households = [], isLoading } = useHouseholds()
+  const { data: households, isLoading: householdsLoading } = useHouseholds()
   const generateInvite = useGenerateInvite()
   const joinHousehold = useJoinHousehold()
   const leaveHousehold = useLeaveHousehold()
@@ -22,38 +24,38 @@ export function Settings() {
   const handleGenerateInvite = async (householdId: string) => {
     try {
       const result = await generateInvite.mutateAsync(householdId)
-      setInviteCodes((prev) => ({ ...prev, [householdId]: result.code }))
+      setInviteCodes((prev) => ({ ...prev, [householdId]: result }))
     } catch {
-      toast({ title: 'Błąd', description: 'Nie udało się wygenerować kodu', variant: 'destructive' })
+      toast({ title: 'Nie udało się wygenerować kodu zaproszenia', variant: 'destructive' })
     }
-  }
-
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code)
-    toast({ title: 'Skopiowano!', description: `Kod ${code} skopiowany do schowka` })
   }
 
   const handleJoin = async () => {
-    const code = joinCode.trim().toUpperCase()
-    if (!code) return
+    if (!joinCode.trim()) return
     try {
-      await joinHousehold.mutateAsync(code)
+      await joinHousehold.mutateAsync(joinCode.trim().toUpperCase())
       setJoinCode('')
-      toast({ title: 'Dołączono!', description: 'Teraz masz dostęp do wspólnych zwierząt' })
+      toast({ title: 'Dołączono do gospodarstwa domowego' })
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Nieprawidłowy kod'
-      toast({ title: 'Błąd', description: msg, variant: 'destructive' })
+      const msg = err instanceof Error ? err.message : 'Nie udało się dołączyć'
+      toast({ title: msg, variant: 'destructive' })
     }
   }
 
-  const handleLeave = async (householdId: string, householdName: string) => {
+  const handleLeave = async (householdId: string) => {
     try {
       await leaveHousehold.mutateAsync(householdId)
-      toast({ title: 'Opuszczono', description: `Opuściłeś ${householdName}` })
+      toast({ title: 'Opuszczono gospodarstwo domowe' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Nie udało się opuścić'
-      toast({ title: 'Błąd', description: msg, variant: 'destructive' })
+      toast({ title: msg, variant: 'destructive' })
     }
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({ title: 'Skopiowano do schowka' })
+    })
   }
 
   return (
@@ -63,14 +65,14 @@ export function Settings() {
           <CardHeader>
             <CardTitle className="text-lg">Konto</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <div className="space-y-1">
               <Label>Imię</Label>
-              <Input value={user?.name ?? ''} readOnly className="bg-muted" />
+              <Input value={name} readOnly />
             </div>
             <div className="space-y-1">
               <Label>Email</Label>
-              <Input value={user?.email ?? ''} readOnly className="bg-muted" />
+              <Input type="email" value={email} readOnly />
             </div>
           </CardContent>
         </Card>
@@ -80,79 +82,86 @@ export function Settings() {
             <CardTitle className="text-lg">Gospodarstwo domowe</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {isLoading ? (
-              <p className="text-sm text-muted-foreground">Ładowanie...</p>
-            ) : (
-              households.map((h) => (
-                <div key={h.id} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">{h.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {h.role === 'OWNER' ? 'Właściciel' : 'Członek'} · {h.members.length}{' '}
-                        {h.members.length === 1 ? 'osoba' : 'osoby/osób'}
-                      </p>
-                    </div>
-                    {h.role === 'MEMBER' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleLeave(h.id, h.name)}
-                        disabled={leaveHousehold.isPending}
-                      >
-                        Opuść
-                      </Button>
-                    )}
+            {householdsLoading && <p className="text-sm text-muted-foreground">Ładowanie...</p>}
+            {households && households.length === 0 && (
+              <p className="text-sm text-muted-foreground">Nie należysz do żadnego gospodarstwa domowego.</p>
+            )}
+            {households && households.map((household) => (
+              <div key={household.id} className="space-y-3 border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{household.name}</p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${household.role === 'OWNER' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                      {household.role === 'OWNER' ? 'Właściciel' : 'Członek'}
+                    </span>
                   </div>
-
-                  <div className="rounded-md border divide-y">
-                    {h.members.map((m) => (
-                      <div key={m.id} className="flex items-center justify-between px-3 py-2">
-                        <div>
-                          <p className="text-sm font-medium">{m.user.name}</p>
-                          <p className="text-xs text-muted-foreground">{m.user.email}</p>
-                        </div>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${m.role === 'OWNER' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
-                          {m.role === 'OWNER' ? 'Właściciel' : 'Członek'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
+                  {household.role === 'MEMBER' && (
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleGenerateInvite(h.id)}
-                      disabled={generateInvite.isPending}
+                      onClick={() => handleLeave(household.id)}
+                      disabled={leaveHousehold.isPending}
                     >
-                      Generuj kod zaproszenia
+                      Opuść
                     </Button>
-                    {inviteCodes[h.id] && (
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Członkowie</p>
+                  {household.members.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between text-sm">
+                      <div>
+                        <span className="font-medium">{member.user.name}</span>
+                        <span className="text-muted-foreground ml-2">{member.user.email}</span>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${member.role === 'OWNER' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                        {member.role === 'OWNER' ? 'Właściciel' : 'Członek'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleGenerateInvite(household.id)}
+                    disabled={generateInvite.isPending}
+                  >
+                    Generuj kod zaproszenia
+                  </Button>
+                  {inviteCodes[household.id] && (
+                    <div className="bg-muted rounded p-3 space-y-1">
                       <div className="flex items-center gap-2">
-                        <code className="flex-1 rounded bg-muted px-3 py-2 text-sm font-mono tracking-widest">
-                          {inviteCodes[h.id]}
+                        <code className="text-lg font-mono font-bold tracking-widest">
+                          {inviteCodes[household.id].code}
                         </code>
-                        <Button size="sm" variant="ghost" onClick={() => handleCopyCode(inviteCodes[h.id])}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(inviteCodes[household.id].code)}
+                        >
                           Kopiuj
                         </Button>
                       </div>
-                    )}
-                    <p className="text-xs text-muted-foreground">Kod jest ważny 24 godziny</p>
-                  </div>
+                      <p className="text-xs text-muted-foreground">
+                        Wygasa: {new Date(inviteCodes[household.id].expiresAt).toLocaleString('pl-PL')}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              ))
-            )}
+              </div>
+            ))}
 
-            <div className="border-t pt-4 space-y-2">
-              <p className="text-sm font-medium">Dołącz do innego gospodarstwa</p>
+            <div className="space-y-2 border-t pt-4">
+              <p className="text-sm font-medium">Dołącz do gospodarstwa domowego</p>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Wpisz kod (np. AB12CD34)"
+                  placeholder="Wpisz kod zaproszenia"
                   value={joinCode}
-                  onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                  maxLength={8}
-                  className="font-mono"
+                  onChange={(e) => setJoinCode(e.target.value)}
+                  className="font-mono uppercase"
                 />
                 <Button onClick={handleJoin} disabled={joinHousehold.isPending || !joinCode.trim()}>
                   Dołącz

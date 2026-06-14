@@ -20,7 +20,7 @@ export function usePet(id: string) {
 export function useCreatePet() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: Omit<Pet, 'id' | 'userId' | 'createdAt'>) => petsApi.create(data),
+    mutationFn: (data: Omit<Pet, 'id' | 'householdId' | 'createdAt'>) => petsApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pets'] })
     },
@@ -30,7 +30,7 @@ export function useCreatePet() {
 export function useUpdatePet(id: string) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: Partial<Omit<Pet, 'id' | 'userId' | 'createdAt'>>) => petsApi.update(id, data),
+    mutationFn: (data: Partial<Omit<Pet, 'id' | 'householdId' | 'createdAt'>>) => petsApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pets'] })
       queryClient.invalidateQueries({ queryKey: ['pets', id] })
