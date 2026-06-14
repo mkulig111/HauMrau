@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
   output        = "../../node_modules/.prisma/client"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -10,13 +10,14 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  name         String
-  createdAt    DateTime @default(now())
-  pets         Pet[]
+  id            String            @id @default(cuid())
+  email         String            @unique
+  passwordHash  String
+  name          String
+  createdAt     DateTime          @default(now())
   refreshTokens RefreshToken[]
+  memberships   HouseholdMember[]
+  invitesSent   HouseholdInvite[]
 }
 
 model RefreshToken {
@@ -28,19 +29,52 @@ model RefreshToken {
   createdAt DateTime @default(now())
 }
 
+model Household {
+  id        String            @id @default(cuid())
+  name      String
+  createdAt DateTime          @default(now())
+  members   HouseholdMember[]
+  pets      Pet[]
+  invites   HouseholdInvite[]
+}
+
+model HouseholdMember {
+  id          String    @id @default(cuid())
+  householdId String
+  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String    @default("MEMBER")
+  joinedAt    DateTime  @default(now())
+
+  @@unique([householdId, userId])
+}
+
+model HouseholdInvite {
+  id          String    @id @default(cuid())
+  householdId String
+  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  code        String    @unique
+  createdById String
+  createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+}
+
 model Pet {
-  id            String        @id @default(cuid())
-  userId        String
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  householdId   String
+  household     Household      @relation(fields: [householdId], references: [id], onDelete: Cascade)
   name          String
   species       String
   breed         String?
   birthDate     DateTime?
   sex           String
-  neutered      Boolean       @default(false)
+  neutered      Boolean        @default(false)
   weightGoalKg  Float?
   photoUrl      String?
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime       @default(now())
   weightLogs    WeightLog[]
   dietPlans     DietPlan[]
   mealLogs      MealLog[]
@@ -50,56 +84,56 @@ model Pet {
 }
 
 model WeightLog {
-  id        String   @id @default(cuid())
-  petId     String
-  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
-  weightKg  Float
-  note      String?
-  loggedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  petId    String
+  pet      Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  weightKg Float
+  note     String?
+  loggedAt DateTime @default(now())
 }
 
 model DietPlan {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   petId         String
-  pet           Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  pet           Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
   targetKcal    Int
   dryFoodG      Float?
   wetFoodG      Float?
   waterMlTarget Int?
   notes         String?
-  activeFrom    DateTime @default(now())
+  activeFrom    DateTime  @default(now())
   activeTo      DateTime?
 }
 
 model MealLog {
-  id         String   @id @default(cuid())
-  petId      String
-  pet        Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
-  type       String
-  amountG    Float?
-  amountMl   Float?
-  kcal       Int?
-  loggedAt   DateTime @default(now())
+  id       String   @id @default(cuid())
+  petId    String
+  pet      Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  type     String
+  amountG  Float?
+  amountMl Float?
+  kcal     Int?
+  loggedAt DateTime @default(now())
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   petId       String
-  pet         Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  pet         Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
   type        String
   title       String
   scheduledAt DateTime
   location    String?
   notes       String?
-  done        Boolean  @default(false)
+  done        Boolean   @default(false)
   remindAt    DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 }
 
 model Vaccination {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   petId          String
-  pet            Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  pet            Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
   name           String
   administeredAt DateTime
   expiresAt      DateTime?

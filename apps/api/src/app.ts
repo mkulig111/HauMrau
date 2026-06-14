@@ -12,6 +12,7 @@ import weightRouter from './routes/weight';
 import dietRouter from './routes/diet';
 import eventsRouter from './routes/events';
 import healthRouter from './routes/health';
+import householdRouter from './routes/household';
 import { startNotificationScheduler } from './services/notificationService';
 
 const app = express();
@@ -52,6 +53,7 @@ app.use('/api/v1/pets/:petId/weight', weightRouter);
 app.use('/api/v1/pets/:petId/diet', dietRouter);
 app.use('/api/v1/pets/:petId/events', eventsRouter);
 app.use('/api/v1/pets/:petId/health', healthRouter);
+app.use('/api/v1/household', householdRouter);
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {
