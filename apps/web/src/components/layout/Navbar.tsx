@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, Plus } from 'lucide-react'
+import { LogOut, Plus, Settings as SettingsIcon } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 export function Navbar() {
@@ -99,6 +99,16 @@ export function Navbar() {
             }}>
               {initials}
             </div>
+            <Link to="/settings" title="Ustawienia" style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#94a3b8',
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+              <SettingsIcon size={16} />
+            </Link>
             <button onClick={handleLogout} title="Wyloguj" style={{
               background: 'transparent',
               border: 'none',
