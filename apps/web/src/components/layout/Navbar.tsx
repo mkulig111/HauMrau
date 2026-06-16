@@ -47,14 +47,14 @@ export function Navbar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <Link to="/" style={{
-          padding: '6px 14px',
-          borderRadius: '8px',
-          border: '1px solid transparent',
-          background: 'transparent',
-          color: '#64748b',
+          padding: '7px 16px',
+          borderRadius: '10px',
+          background: 'linear-gradient(135deg,#a855f7,#6366f1)',
+          color: '#fff',
           fontSize: '13px',
-          fontWeight: 500,
+          fontWeight: 600,
           textDecoration: 'none',
+          boxShadow: '0 3px 10px rgba(168,85,247,.3)',
         }}>
           Dashboard
         </Link>
