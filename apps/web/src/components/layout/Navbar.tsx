@@ -42,7 +42,6 @@ export function Navbar() {
         gap: '8px',
         textDecoration: 'none',
       }}>
-        <img src="/logo.svg" alt="HauMrau" style={{ width: '32px', height: '32px' }} />
         HauMrau
       </Link>
 
