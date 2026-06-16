@@ -106,8 +106,9 @@ export function Navbar() {
               color: '#94a3b8',
               display: 'flex',
               alignItems: 'center',
+              padding: '6px',
             }}>
-              <SettingsIcon size={16} />
+              <SettingsIcon size={16} style={{ pointerEvents: 'none' }} />
             </Link>
             <button onClick={handleLogout} title="Wyloguj" style={{
               background: 'transparent',
@@ -116,8 +117,9 @@ export function Navbar() {
               color: '#94a3b8',
               display: 'flex',
               alignItems: 'center',
+              padding: '6px',
             }}>
-              <LogOut size={16} />
+              <LogOut size={16} style={{ pointerEvents: 'none' }} />
             </button>
           </div>
         )}
