@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { validate } from '../middleware/validate';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
@@ -20,6 +21,15 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+});
+
+const updateMeSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  currentPassword: z.string().min(1).optional(),
+  newPassword: z.string().min(6).max(128).optional(),
+}).refine((data) => !data.newPassword || !!data.currentPassword, {
+  message: 'currentPassword is required to set a new password',
+  path: ['currentPassword'],
 });
 
 function generateAccessToken(userId: string, email: string): string {
@@ -166,6 +176,46 @@ router.post('/refresh', async (req: Request, res: Response): Promise<void> => {
   setRefreshCookie(res, newRefreshToken);
 
   res.json({ accessToken });
+});
+
+// GET /me
+router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+  if (!user) {
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+  res.json({ id: user.id, email: user.email, name: user.name });
+});
+
+// PATCH /me
+router.patch('/me', requireAuth, validate(updateMeSchema), async (req: Request, res: Response): Promise<void> => {
+  const { name, currentPassword, newPassword } = req.body as z.infer<typeof updateMeSchema>;
+
+  const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+  if (!user) {
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+
+  const data: { name?: string; passwordHash?: string } = {};
+
+  if (name) {
+    data.name = name;
+  }
+
+  if (newPassword) {
+    const valid = await bcrypt.compare(currentPassword!, user.passwordHash);
+    if (!valid) {
+      res.status(401).json({ error: 'Current password is incorrect' });
+      return;
+    }
+    data.passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+  }
+
+  const updated = await prisma.user.update({ where: { id: user.id }, data });
+
+  res.json({ id: updated.id, email: updated.email, name: updated.name });
 });
 
 // POST /logout
