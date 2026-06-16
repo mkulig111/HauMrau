@@ -80,6 +80,10 @@ async function seedAll() {
   const mateusz = await prisma.user.findUnique({ where: { email: 'mateusz@petcare.pl' } });
   if (!mateusz) { console.error('Brak użytkownika Mateusz'); process.exit(1); }
 
+  const membership = await prisma.householdMember.findFirst({ where: { userId: mateusz.id } });
+  if (!membership) { console.error('Brak gospodarstwa domowego dla Mateusza'); process.exit(1); }
+  const householdId = membership.householdId;
+
   // Pets
   const petsData = [
     { name: 'Mruczek', species: 'CAT', sex: 'MALE',   neutered: true,  weightGoalKg: 4.5 },
@@ -87,9 +91,9 @@ async function seedAll() {
   ];
 
   for (const p of petsData) {
-    const existing = await prisma.pet.findFirst({ where: { name: p.name, userId: mateusz.id } });
+    const existing = await prisma.pet.findFirst({ where: { name: p.name, householdId } });
     if (!existing) {
-      await prisma.pet.create({ data: { ...p, userId: mateusz.id } });
+      await prisma.pet.create({ data: { ...p, householdId } });
       console.log(`✓ Zwierzę: ${p.name}`);
     } else {
       console.log(`- Zwierzę już istnieje: ${p.name}`);
@@ -97,8 +101,8 @@ async function seedAll() {
   }
 
   // Weight logs
-  const mruczek = await prisma.pet.findFirst({ where: { name: 'Mruczek', userId: mateusz.id } });
-  const felinka = await prisma.pet.findFirst({ where: { name: 'Felinka', userId: mateusz.id } });
+  const mruczek = await prisma.pet.findFirst({ where: { name: 'Mruczek', householdId } });
+  const felinka = await prisma.pet.findFirst({ where: { name: 'Felinka', householdId } });
 
   if (mruczek) {
     const existing = await prisma.weightLog.count({ where: { petId: mruczek.id } });

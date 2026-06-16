@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/db';
 import { validate } from '../middleware/validate';
 import { requireAuth } from '../middleware/auth';
@@ -68,7 +69,7 @@ router.post('/register', validate(registerSchema), async (req: Request, res: Res
   }
 
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-  const user = await prisma.$transaction(async (tx: typeof prisma) => {
+  const user = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const newUser = await tx.user.create({ data: { email, name, passwordHash } });
     await tx.household.create({ data: { name: `${name}'s Household`, members: { create: { userId: newUser.id, role: 'OWNER' } } } });
     return newUser;

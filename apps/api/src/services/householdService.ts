@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/db';
 
 export async function getHousehold(userId: string) {
@@ -24,7 +25,7 @@ export async function joinHousehold(userId: string, code: string) {
   if (invite.expiresAt < new Date()) throw new Error('Invite expired');
   const existing = await prisma.householdMember.findUnique({ where: { householdId_userId: { householdId: invite.householdId, userId } } });
   if (existing) throw new Error('Already a member');
-  return prisma.$transaction(async (tx: typeof prisma) => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.householdInvite.update({ where: { id: invite.id }, data: { usedAt: new Date() } });
     return tx.householdMember.create({ data: { householdId: invite.householdId, userId, role: 'MEMBER' } });
   });
