@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import type {
   Pet, WeightLog, DietPlan, MealLog, PetEvent, Vaccination, HealthRecord,
-  AuthTokens, CaloriesSuggestion, ActivityFactor, Household
+  AuthTokens, CaloriesSuggestion, ActivityFactor, Household, User
 } from '../types'
 
 const api = axios.create({
@@ -66,6 +66,8 @@ export const authApi = {
     api.post<AuthTokens>('/auth/login', data).then((r) => r.data),
   logout: () => api.post('/auth/logout'),
   refresh: () => api.post<{ accessToken: string }>('/auth/refresh').then((r) => r.data),
+  updateMe: (data: { name?: string; currentPassword?: string; newPassword?: string }) =>
+    api.patch<User>('/auth/me', data).then((r) => r.data),
 }
 
 export const petsApi = {

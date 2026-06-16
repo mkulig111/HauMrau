@@ -7,12 +7,16 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
 import { useHouseholds, useGenerateInvite, useJoinHousehold, useLeaveHousehold } from '@/hooks/useHousehold'
+import { authApi } from '@/lib/api'
 
 export function Settings() {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
   const { toast } = useToast()
-  const [name] = useState(user?.name ?? '')
+  const [name, setName] = useState(user?.name ?? '')
   const [email] = useState(user?.email ?? '')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [savingAccount, setSavingAccount] = useState(false)
   const [joinCode, setJoinCode] = useState('')
   const [inviteCodes, setInviteCodes] = useState<Record<string, { code: string; expiresAt: string }>>({})
 
@@ -20,6 +24,31 @@ export function Settings() {
   const generateInvite = useGenerateInvite()
   const joinHousehold = useJoinHousehold()
   const leaveHousehold = useLeaveHousehold()
+
+  const handleSaveAccount = async () => {
+    if (newPassword && !currentPassword) {
+      toast({ title: 'Podaj aktualne hasło, aby ustawić nowe', variant: 'destructive' })
+      return
+    }
+    setSavingAccount(true)
+    try {
+      const updated = await authApi.updateMe({
+        name: name.trim() || undefined,
+        currentPassword: currentPassword || undefined,
+        newPassword: newPassword || undefined,
+      })
+      setUser(updated)
+      localStorage.setItem('user', JSON.stringify(updated))
+      setCurrentPassword('')
+      setNewPassword('')
+      toast({ title: 'Zmiany zapisane' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Nie udało się zapisać zmian'
+      toast({ title: msg, variant: 'destructive' })
+    } finally {
+      setSavingAccount(false)
+    }
+  }
 
   const handleGenerateInvite = async (householdId: string) => {
     try {
@@ -68,12 +97,33 @@ export function Settings() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <Label>Imię</Label>
-              <Input value={name} readOnly />
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="space-y-1">
               <Label>Email</Label>
               <Input type="email" value={email} readOnly />
             </div>
+            <div className="space-y-1">
+              <Label>Aktualne hasło</Label>
+              <Input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Wymagane tylko przy zmianie hasła"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Nowe hasło</Label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Pozostaw puste, aby nie zmieniać"
+              />
+            </div>
+            <Button onClick={handleSaveAccount} disabled={savingAccount}>
+              Zapisz zmiany
+            </Button>
           </CardContent>
         </Card>
 
