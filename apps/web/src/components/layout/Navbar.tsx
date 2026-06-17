@@ -2,6 +2,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, Plus } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
+function Logo() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="60" r="26" fill="none" stroke="currentColor" strokeWidth="16" strokeDasharray="123 41" transform="rotate(45 40 60)"/>
+      <polygon points="58,60 58,30 62,12 66,26 70,10 74,30 74,60" fill="currentColor"/>
+    </svg>
+  )
+}
+
 export function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -42,6 +51,7 @@ export function Navbar() {
         gap: '8px',
         textDecoration: 'none',
       }}>
+        <Logo />
         HauMrau
       </Link>
 
