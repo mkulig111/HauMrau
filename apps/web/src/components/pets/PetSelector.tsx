@@ -1,5 +1,6 @@
 import { useRef } from 'react'
-import { Camera } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Camera, Pencil } from 'lucide-react'
 import { PetAvatar } from './PetAvatar'
 import { cn } from '@/lib/utils'
 import { useUploadPetPhoto } from '@/hooks/usePets'
@@ -60,21 +61,30 @@ function PetAvatarUpload({ pet, isSelected }: { pet: Pet; isSelected: boolean })
 
 export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
   return (
-    <div className="flex gap-3 flex-wrap">
+    <div className="flex gap-3 flex-wrap items-end">
       {pets.map((pet) => (
-        <button
-          key={pet.id}
-          onClick={() => onSelect(pet.id)}
-          className={cn(
-            'flex flex-col items-center gap-1 p-2 rounded-lg border transition-colors',
-            selectedId === pet.id
-              ? 'border-primary bg-primary/5'
-              : 'border-transparent hover:border-border'
+        <div key={pet.id} className="flex flex-col items-center gap-1">
+          <button
+            onClick={() => onSelect(pet.id)}
+            className={cn(
+              'flex flex-col items-center gap-1 p-2 rounded-lg border transition-colors',
+              selectedId === pet.id
+                ? 'border-primary bg-primary/5'
+                : 'border-transparent hover:border-border'
+            )}
+          >
+            <PetAvatarUpload pet={pet} isSelected={selectedId === pet.id} />
+            <span className="text-xs font-medium">{pet.name}</span>
+          </button>
+          {selectedId === pet.id && (
+            <Link
+              to={`/pets/${pet.id}`}
+              className="flex items-center gap-1 text-xs text-primary hover:underline"
+            >
+              <Pencil size={10} /> Edytuj dane
+            </Link>
           )}
-        >
-          <PetAvatarUpload pet={pet} isSelected={selectedId === pet.id} />
-          <span className="text-xs font-medium">{pet.name}</span>
-        </button>
+        </div>
       ))}
     </div>
   )
