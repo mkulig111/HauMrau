@@ -1,21 +1,20 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { format, differenceInDays } from 'date-fns'
-import { Scale, Calendar, Syringe, Plus, TrendingDown, TrendingUp, Minus } from 'lucide-react'
+import { Scale, Calendar, Plus, TrendingDown, TrendingUp, Minus } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PetSelector } from '@/components/pets/PetSelector'
 import { WeightChart } from '@/components/weight/WeightChart'
 import { EventCard } from '@/components/events/EventCard'
+import { EventsCalendar } from '@/components/events/EventsCalendar'
 import { CalorieBar } from '@/components/diet/CalorieBar'
 import { usePets } from '@/hooks/usePets'
 import { useWeightLog } from '@/hooks/useWeightLog'
 import { useEvents } from '@/hooks/useEvents'
 import { useMealLog, useDietPlan } from '@/hooks/useDiet'
 import { weightTrend, formatWeight, formatDate } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
-import { healthApi } from '@/lib/api'
 import { format as dateFnsFormat } from 'date-fns'
 
 export function Dashboard() {
@@ -26,25 +25,16 @@ export function Dashboard() {
   const { data: allWeightEntries = [] } = useWeightLog(petId)
   const weightEntries = [...allWeightEntries].sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime()).slice(-6)
   const { data: events = [] } = useEvents(petId, { upcoming: true, limit: 3 })
+  const { data: allEvents = [] } = useEvents(petId, { upcoming: false, limit: 200 })
   const { data: dietPlan } = useDietPlan(petId)
   const today = dateFnsFormat(new Date(), 'yyyy-MM-dd')
   const { data: meals = [] } = useMealLog(petId, today)
-  const { data: vaccinations = [] } = useQuery({
-    queryKey: ['vaccinations', petId],
-    queryFn: () => healthApi.listVaccinations(petId),
-    enabled: !!petId,
-  })
 
   const selectedPet = pets.find((p) => p.id === petId)
   const trend = weightTrend(weightEntries)
   const lastWeight = weightEntries[weightEntries.length - 1]
   const nextEvent = events.find((e) => !e.done)
   const consumedKcal = meals.reduce((s, m) => s + (m.kcal ?? 0), 0)
-
-  const expiringVaccinations = vaccinations.filter((v) => {
-    if (!v.expiresAt) return false
-    return differenceInDays(new Date(v.expiresAt), new Date()) <= 30
-  })
 
   if (petsLoading) {
     return <PageWrapper><div className="text-center py-20 text-muted-foreground">Ładowanie...</div></PageWrapper>
@@ -88,7 +78,7 @@ export function Dashboard() {
         />
 
         {/* Metric cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Waga</CardTitle>
@@ -147,29 +137,20 @@ export function Dashboard() {
               </div>
             </CardContent>
           </Card>
-
-          <Card className="flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Szczepienia</CardTitle>
-              <Syringe className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="flex flex-col flex-1">
-              <p className="text-2xl font-bold">{vaccinations.length}</p>
-              {expiringVaccinations.length > 0 ? (
-                <p className="text-xs text-orange-600 font-medium">
-                  {expiringVaccinations.length} wygasa wkrótce
-                </p>
-              ) : (
-                <p className="text-xs text-green-600">Wszystkie aktualne</p>
-              )}
-              <div className="mt-auto pt-2">
-                <Button variant="link" size="sm" className="px-0" asChild>
-                  <Link to={`/pets/${petId}/health`}>Szczepienia</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
+
+        {/* Calendar */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Kalendarz zdarzeń</CardTitle>
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <EventsCalendar events={allEvents} />
+          </CardContent>
+        </Card>
 
         {/* Weight chart */}
         <Card>
