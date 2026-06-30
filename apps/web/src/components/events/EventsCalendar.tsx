@@ -43,8 +43,8 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
   const weekDayLabels = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nie']
 
   return (
-    <div className="max-w-sm mx-auto">
-      <div className="flex items-center justify-between mb-2">
+    <div className="max-w-md mx-auto w-full">
+      <div className="flex items-center justify-between mb-3">
         <button
           type="button"
           onClick={() => setMonth((m) => subMonths(m, 1))}
@@ -53,7 +53,7 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
         >
           <ChevronLeft size={14} />
         </button>
-        <span className="text-sm font-semibold capitalize">
+        <span className="text-base font-semibold capitalize">
           {format(month, 'LLLL yyyy', { locale: pl })}
         </span>
         <button
@@ -68,7 +68,7 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
 
       <div className="grid grid-cols-7 gap-1 mb-1">
         {weekDayLabels.map((d) => (
-          <div key={d} className="text-center text-[10px] font-medium text-muted-foreground">
+          <div key={d} className="text-center text-[11px] font-medium text-muted-foreground">
             {d}
           </div>
         ))}
@@ -86,37 +86,38 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
             : undefined
           const allDone = dayEvents.length > 0 && dayEvents.every((e) => e.done)
           return (
-            <div
-              key={day.toISOString()}
-              className="h-8 rounded-md border border-border/60 flex items-center justify-center"
-              style={{
-                opacity: isSameMonth(day, month) ? 1 : 0.35,
-                background: fill ?? (isToday(day) ? 'rgba(168,85,247,0.08)' : undefined),
-                borderColor: isToday(day) ? '#a855f7' : undefined,
-              }}
-              title={dayEvents.map((e) => `${eventTypeMeta[e.type]?.label ?? e.type}: ${e.title}`).join('\n')}
-            >
-              <span
-                className="text-[10px] font-medium leading-none"
+            <div key={day.toISOString()} className="flex items-center justify-center py-0.5">
+              <div
+                className="h-8 w-8 rounded-full flex items-center justify-center"
                 style={{
-                  color: fill ? '#fff' : undefined,
-                  opacity: allDone ? 0.5 : 1,
+                  opacity: isSameMonth(day, month) ? 1 : 0.35,
+                  background: fill,
+                  border: !fill && isToday(day) ? '2px solid #a855f7' : undefined,
                 }}
+                title={dayEvents.map((e) => `${eventTypeMeta[e.type]?.label ?? e.type}: ${e.title}`).join('\n')}
               >
-                {format(day, 'd')}
-              </span>
+                <span
+                  className="text-xs font-medium leading-none"
+                  style={{
+                    color: fill ? '#fff' : undefined,
+                    opacity: allDone ? 0.5 : 1,
+                  }}
+                >
+                  {format(day, 'd')}
+                </span>
+              </div>
             </div>
           )
         })}
       </div>
 
-      <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3">
+      <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4">
         {(Object.keys(eventTypeMeta) as EventType[]).map((type) => {
           const meta = eventTypeMeta[type]
           return (
-            <div key={type} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+            <div key={type} className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span
-                className="inline-block h-2.5 w-2.5 rounded-sm"
+                className="inline-block h-2.5 w-2.5 rounded-full"
                 style={{ background: meta.color }}
               />
               {meta.label}

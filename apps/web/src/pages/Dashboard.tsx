@@ -79,66 +79,68 @@ export function Dashboard() {
 
         {/* Metric cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Waga</CardTitle>
-              <Scale className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="flex flex-col flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">
-                  {lastWeight ? formatWeight(lastWeight.weightKg) : '–'}
-                </span>
-                {trend === 'losing' && <TrendingDown className="h-5 w-5 text-blue-500" />}
-                {trend === 'gaining' && <TrendingUp className="h-5 w-5 text-orange-500" />}
-                {trend === 'stable' && <Minus className="h-5 w-5 text-green-500" />}
-              </div>
-              {lastWeight && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Ostatni pomiar: {formatDate(lastWeight.loggedAt)}
-                </p>
-              )}
-              {selectedPet?.weightGoalKg && (
-                <p className="text-xs text-muted-foreground">
-                  Cel: {formatWeight(selectedPet.weightGoalKg)}
-                </p>
-              )}
-              <div className="mt-auto pt-2">
-                <Button variant="link" size="sm" className="px-0" asChild>
-                  <Link to={`/pets/${petId}/weight`}>Historia wagi</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Następne zdarzenie</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="flex flex-col flex-1">
-              {nextEvent ? (
-                <>
-                  <p className="font-semibold truncate">{nextEvent.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {format(new Date(nextEvent.scheduledAt), 'dd.MM.yyyy')}
+          <div className="flex flex-col gap-4">
+            <Card className="flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Waga</CardTitle>
+                <Scale className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent className="flex flex-col flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">
+                    {lastWeight ? formatWeight(lastWeight.weightKg) : '–'}
+                  </span>
+                  {trend === 'losing' && <TrendingDown className="h-5 w-5 text-blue-500" />}
+                  {trend === 'gaining' && <TrendingUp className="h-5 w-5 text-orange-500" />}
+                  {trend === 'stable' && <Minus className="h-5 w-5 text-green-500" />}
+                </div>
+                {lastWeight && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Ostatni pomiar: {formatDate(lastWeight.loggedAt)}
                   </p>
+                )}
+                {selectedPet?.weightGoalKg && (
                   <p className="text-xs text-muted-foreground">
-                    Za {differenceInDays(new Date(nextEvent.scheduledAt), new Date())} dni
+                    Cel: {formatWeight(selectedPet.weightGoalKg)}
                   </p>
-                </>
-              ) : (
-                <p className="text-muted-foreground text-sm">Brak zaplanowanych zdarzeń</p>
-              )}
-              <div className="mt-auto pt-2">
-                <Button variant="link" size="sm" className="px-0" asChild>
-                  <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                )}
+                <div className="mt-auto pt-2">
+                  <Button variant="link" size="sm" className="px-0" asChild>
+                    <Link to={`/pets/${petId}/weight`}>Historia wagi</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="flex flex-col">
+            <Card className="flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Następne zdarzenie</CardTitle>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent className="flex flex-col flex-1">
+                {nextEvent ? (
+                  <>
+                    <p className="font-semibold truncate">{nextEvent.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {format(new Date(nextEvent.scheduledAt), 'dd.MM.yyyy')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Za {differenceInDays(new Date(nextEvent.scheduledAt), new Date())} dni
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground text-sm">Brak zaplanowanych zdarzeń</p>
+                )}
+                <div className="mt-auto pt-2">
+                  <Button variant="link" size="sm" className="px-0" asChild>
+                    <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="flex flex-col md:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Kalendarz zdarzeń</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
