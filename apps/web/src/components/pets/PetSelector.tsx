@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Camera, Pencil } from 'lucide-react'
+import { Camera, Pencil, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PetAvatar } from './PetAvatar'
 import { cn } from '@/lib/utils'
 import { useUploadPetPhoto } from '@/hooks/usePets'
@@ -60,32 +60,62 @@ function PetAvatarUpload({ pet, isSelected }: { pet: Pet; isSelected: boolean })
 }
 
 export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const scrollBy = (amount: number) => {
+    scrollRef.current?.scrollBy({ left: amount, behavior: 'smooth' })
+  }
+
   return (
-    <div className="flex gap-3 flex-wrap items-end">
-      {pets.map((pet) => (
-        <div key={pet.id} className="flex flex-col items-center gap-1">
-          <button
-            onClick={() => onSelect(pet.id)}
-            className={cn(
-              'flex flex-col items-center gap-1 p-2 rounded-lg border transition-colors',
-              selectedId === pet.id
-                ? 'border-primary bg-primary/5'
-                : 'border-transparent hover:border-border'
-            )}
-          >
-            <PetAvatarUpload pet={pet} isSelected={selectedId === pet.id} />
-            <span className="text-xs font-medium">{pet.name}</span>
-          </button>
-          {selectedId === pet.id && (
-            <Link
-              to={`/pets/${pet.id}`}
-              className="flex items-center gap-1 text-xs text-primary hover:underline"
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => scrollBy(-200)}
+        className="flex-shrink-0 h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted"
+        aria-label="Przewiń w lewo"
+      >
+        <ChevronLeft size={16} />
+      </button>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-3 items-start overflow-x-auto scroll-smooth no-scrollbar"
+        style={{ scrollbarWidth: 'none' }}
+      >
+        {pets.map((pet) => (
+          <div key={pet.id} className="flex flex-col items-center gap-1 flex-shrink-0">
+            <button
+              onClick={() => onSelect(pet.id)}
+              className={cn(
+                'flex flex-col items-center gap-1 p-2 rounded-lg border transition-colors',
+                selectedId === pet.id
+                  ? 'border-primary bg-primary/5'
+                  : 'border-transparent hover:border-border'
+              )}
             >
-              <Pencil size={10} /> Edytuj dane
-            </Link>
-          )}
-        </div>
-      ))}
+              <PetAvatarUpload pet={pet} isSelected={selectedId === pet.id} />
+              <span className="text-xs font-medium">{pet.name}</span>
+            </button>
+            {selectedId === pet.id && (
+              <Link
+                to={`/pets/${pet.id}`}
+                className="flex items-center gap-1 text-xs text-primary hover:underline"
+              >
+                <Pencil size={10} /> Edytuj dane
+              </Link>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => scrollBy(200)}
+        className="flex-shrink-0 h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted"
+        aria-label="Przewiń w prawo"
+      >
+        <ChevronRight size={16} />
+      </button>
     </div>
   )
 }
