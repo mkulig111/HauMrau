@@ -43,8 +43,8 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
   const weekDayLabels = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nie']
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
+    <div className="max-w-sm mx-auto">
+      <div className="flex items-center justify-between mb-2">
         <button
           type="button"
           onClick={() => setMonth((m) => subMonths(m, 1))}
@@ -80,7 +80,7 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
           return (
             <div
               key={day.toISOString()}
-              className="aspect-square rounded-lg border border-border/60 p-1 flex flex-col items-center justify-start gap-0.5"
+              className="h-8 rounded-md border border-border/60 flex flex-col items-center justify-center gap-px"
               style={{
                 opacity: isSameMonth(day, month) ? 1 : 0.35,
                 background: isToday(day) ? 'rgba(168,85,247,0.08)' : undefined,
@@ -88,8 +88,8 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
               }}
               title={dayEvents.map((e) => `${eventTypeMeta[e.type]?.label ?? e.type}: ${e.title}`).join('\n')}
             >
-              <span className="text-[10px] font-medium">{format(day, 'd')}</span>
-              <div className="flex flex-wrap items-center justify-center gap-0.5">
+              <span className="text-[9px] font-medium leading-none">{format(day, 'd')}</span>
+              <div className="flex items-center justify-center gap-px leading-none">
                 {dayEvents.slice(0, 3).map((e) => {
                   const meta = eventTypeMeta[e.type] ?? eventTypeMeta.OTHER
                   const Icon = meta.icon
@@ -101,12 +101,12 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                         opacity: e.done ? 0.4 : 1,
                       }}
                     >
-                      <Icon size={10} strokeWidth={2.5} />
+                      <Icon size={7} strokeWidth={3} />
                     </span>
                   )
                 })}
                 {dayEvents.length > 3 && (
-                  <span className="text-[8px] text-muted-foreground">+{dayEvents.length - 3}</span>
+                  <span className="text-[7px] text-muted-foreground">+{dayEvents.length - 3}</span>
                 )}
               </div>
             </div>
