@@ -62,6 +62,9 @@ function PetAvatarUpload({ pet, isSelected }: { pet: Pet; isSelected: boolean })
 export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  const ITEM_WIDTH = 172 // avatar (144px) + button padding (16px) + gap (12px)
+  const VISIBLE_COUNT = 4
+
   const scrollBy = (amount: number) => {
     scrollRef.current?.scrollBy({ left: amount, behavior: 'smooth' })
   }
@@ -70,7 +73,7 @@ export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
     <div className="flex items-center gap-2">
       <button
         type="button"
-        onClick={() => scrollBy(-200)}
+        onClick={() => scrollBy(-ITEM_WIDTH)}
         className="flex-shrink-0 h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted"
         aria-label="Przewiń w lewo"
       >
@@ -80,7 +83,7 @@ export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
       <div
         ref={scrollRef}
         className="flex gap-3 items-start overflow-x-auto scroll-smooth no-scrollbar"
-        style={{ scrollbarWidth: 'none' }}
+        style={{ scrollbarWidth: 'none', maxWidth: ITEM_WIDTH * VISIBLE_COUNT - 12 }}
       >
         {pets.map((pet) => (
           <div key={pet.id} className="flex flex-col items-center gap-1 flex-shrink-0">
@@ -110,7 +113,7 @@ export function PetSelector({ pets, selectedId, onSelect }: PetSelectorProps) {
 
       <button
         type="button"
-        onClick={() => scrollBy(200)}
+        onClick={() => scrollBy(ITEM_WIDTH)}
         className="flex-shrink-0 h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted"
         aria-label="Przewiń w prawo"
       >
