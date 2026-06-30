@@ -13,15 +13,15 @@ import {
   subMonths,
 } from 'date-fns'
 import { pl } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight, Stethoscope, Bug, Scissors, Scale, CircleDot } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { PetEvent, EventType } from '@/types'
 
-const eventTypeMeta: Record<EventType, { color: string; icon: typeof Stethoscope; label: string }> = {
-  VET_VISIT: { color: '#6366f1', icon: Stethoscope, label: 'Wizyta u weterynarza' },
-  DEWORMING: { color: '#f59e0b', icon: Bug, label: 'Odrobaczanie' },
-  GROOMING: { color: '#ec4899', icon: Scissors, label: 'Grooming' },
-  WEIGHT_CHECK: { color: '#10b981', icon: Scale, label: 'Kontrola wagi' },
-  OTHER: { color: '#a855f7', icon: CircleDot, label: 'Inne' },
+const eventTypeMeta: Record<EventType, { color: string; label: string }> = {
+  VET_VISIT: { color: '#6366f1', label: 'Wizyta u weterynarza' },
+  DEWORMING: { color: '#f59e0b', label: 'Odrobaczanie' },
+  GROOMING: { color: '#ec4899', label: 'Grooming' },
+  WEIGHT_CHECK: { color: '#10b981', label: 'Kontrola wagi' },
+  OTHER: { color: '#a855f7', label: 'Inne' },
 }
 
 interface EventsCalendarProps {
@@ -77,38 +77,34 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
       <div className="grid grid-cols-7 gap-1">
         {days.map((day) => {
           const dayEvents = eventsByDay(day)
+          const colors = [...new Set(dayEvents.map((e) => eventTypeMeta[e.type]?.color ?? eventTypeMeta.OTHER.color))]
+          const fillStep = colors.length ? 100 / colors.length : 0
+          const fill = colors.length
+            ? `linear-gradient(135deg, ${colors
+                .map((c, i) => `${c} ${i * fillStep}%, ${c} ${(i + 1) * fillStep}%`)
+                .join(', ')})`
+            : undefined
+          const allDone = dayEvents.length > 0 && dayEvents.every((e) => e.done)
           return (
             <div
               key={day.toISOString()}
-              className="h-8 rounded-md border border-border/60 flex flex-col items-center justify-center gap-px"
+              className="h-8 rounded-md border border-border/60 flex items-center justify-center"
               style={{
                 opacity: isSameMonth(day, month) ? 1 : 0.35,
-                background: isToday(day) ? 'rgba(168,85,247,0.08)' : undefined,
+                background: fill ?? (isToday(day) ? 'rgba(168,85,247,0.08)' : undefined),
                 borderColor: isToday(day) ? '#a855f7' : undefined,
               }}
               title={dayEvents.map((e) => `${eventTypeMeta[e.type]?.label ?? e.type}: ${e.title}`).join('\n')}
             >
-              <span className="text-[9px] font-medium leading-none">{format(day, 'd')}</span>
-              <div className="flex items-center justify-center gap-px leading-none">
-                {dayEvents.slice(0, 3).map((e) => {
-                  const meta = eventTypeMeta[e.type] ?? eventTypeMeta.OTHER
-                  const Icon = meta.icon
-                  return (
-                    <span
-                      key={e.id}
-                      style={{
-                        color: meta.color,
-                        opacity: e.done ? 0.4 : 1,
-                      }}
-                    >
-                      <Icon size={7} strokeWidth={3} />
-                    </span>
-                  )
-                })}
-                {dayEvents.length > 3 && (
-                  <span className="text-[7px] text-muted-foreground">+{dayEvents.length - 3}</span>
-                )}
-              </div>
+              <span
+                className="text-[10px] font-medium leading-none"
+                style={{
+                  color: fill ? '#fff' : undefined,
+                  opacity: allDone ? 0.5 : 1,
+                }}
+              >
+                {format(day, 'd')}
+              </span>
             </div>
           )
         })}
@@ -117,10 +113,12 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
       <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3">
         {(Object.keys(eventTypeMeta) as EventType[]).map((type) => {
           const meta = eventTypeMeta[type]
-          const Icon = meta.icon
           return (
             <div key={type} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <Icon size={10} color={meta.color} strokeWidth={2.5} />
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-sm"
+                style={{ background: meta.color }}
+              />
               {meta.label}
             </div>
           )

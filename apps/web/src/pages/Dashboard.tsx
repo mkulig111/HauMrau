@@ -78,7 +78,7 @@ export function Dashboard() {
         />
 
         {/* Metric cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Waga</CardTitle>
@@ -137,20 +137,17 @@ export function Dashboard() {
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Calendar */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Kalendarz zdarzeń</CardTitle>
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/pets/${petId}/health`}>Zarządzaj</Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <EventsCalendar events={allEvents} />
-          </CardContent>
-        </Card>
+          <Card className="flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Kalendarz zdarzeń</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="flex flex-col flex-1">
+              <EventsCalendar events={allEvents} />
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Weight chart */}
         <Card>
