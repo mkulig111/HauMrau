@@ -24,9 +24,9 @@ function resolvePhotoUrl(photoUrl: string): string {
 
 export function PetAvatar({ photoUrl, species, name, size = 'md' }: PetAvatarProps) {
   const sizeClasses = {
-    sm: 'h-8 w-8 text-lg',
-    md: 'h-12 w-12 text-2xl',
-    lg: 'h-20 w-20 text-4xl',
+    sm: 'h-12 w-12 text-xl',
+    md: 'h-[72px] w-[72px] text-3xl',
+    lg: 'h-[120px] w-[120px] text-5xl',
   }
 
   if (photoUrl) {
