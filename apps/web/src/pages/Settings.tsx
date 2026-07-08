@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Bell, BellOff } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
 import { useHouseholds, useGenerateInvite, useJoinHousehold, useLeaveHousehold } from '@/hooks/useHousehold'
 import { authApi } from '@/lib/api'
+import { usePushNotifications } from '@/hooks/usePushNotifications'
 
 export function Settings() {
   const { user, setUser } = useAuth()
@@ -21,6 +23,7 @@ export function Settings() {
   const [inviteCodes, setInviteCodes] = useState<Record<string, { code: string; expiresAt: string }>>({})
 
   const { data: households, isLoading: householdsLoading } = useHouseholds()
+  const push = usePushNotifications()
   const generateInvite = useGenerateInvite()
   const joinHousehold = useJoinHousehold()
   const leaveHousehold = useLeaveHousehold()
@@ -90,6 +93,45 @@ export function Settings() {
   return (
     <PageWrapper title="Ustawienia">
       <div className="max-w-xl space-y-6">
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Powiadomienia</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!push.supported ? (
+              <p className="text-sm text-muted-foreground">
+                Twoja przeglądarka nie obsługuje powiadomień push. Zainstaluj aplikację na ekranie głównym i spróbuj ponownie.
+              </p>
+            ) : push.permission === 'denied' ? (
+              <p className="text-sm text-muted-foreground">
+                Powiadomienia są zablokowane w ustawieniach przeglądarki. Odblokuj je ręcznie i odśwież stronę.
+              </p>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-sm">
+                    {push.subscribed ? 'Powiadomienia włączone' : 'Powiadomienia wyłączone'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Przypomnienia o wizytach, szczepieniach i innych zdarzeniach
+                  </p>
+                </div>
+                <Button
+                  variant={push.subscribed ? 'outline' : 'default'}
+                  size="sm"
+                  onClick={push.subscribed ? push.unsubscribe : push.subscribe}
+                  disabled={push.loading}
+                  className="flex items-center gap-2"
+                >
+                  {push.subscribed ? <BellOff size={14} /> : <Bell size={14} />}
+                  {push.subscribed ? 'Wyłącz' : 'Włącz'}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Konto</CardTitle>
