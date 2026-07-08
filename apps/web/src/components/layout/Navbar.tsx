@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, Plus } from 'lucide-react'
+import { LogOut, Plus, Home } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 function Logo() {
@@ -56,33 +56,36 @@ export function Navbar() {
       </Link>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <Link to="/" style={{
-          padding: '7px 16px',
+        <Link to="/" title="Dashboard" style={{
+          width: '36px',
+          height: '36px',
           borderRadius: '10px',
           background: 'linear-gradient(135deg,#a855f7,#6366f1)',
           color: '#fff',
-          fontSize: '13px',
-          fontWeight: 600,
-          textDecoration: 'none',
-          boxShadow: '0 3px 10px rgba(168,85,247,.3)',
-        }}>
-          Dashboard
-        </Link>
-
-        <Link to="/pets/new" style={{
-          padding: '7px 16px',
-          borderRadius: '10px',
-          background: 'linear-gradient(135deg,#a855f7,#6366f1)',
-          color: '#fff',
-          fontSize: '13px',
-          fontWeight: 600,
           textDecoration: 'none',
           display: 'flex',
           alignItems: 'center',
-          gap: '4px',
+          justifyContent: 'center',
           boxShadow: '0 3px 10px rgba(168,85,247,.3)',
+          flexShrink: 0,
         }}>
-          <Plus size={14} /> Dodaj zwierzę
+          <Home size={16} />
+        </Link>
+
+        <Link to="/pets/new" title="Dodaj zwierzę" style={{
+          width: '36px',
+          height: '36px',
+          borderRadius: '10px',
+          background: 'linear-gradient(135deg,#a855f7,#6366f1)',
+          color: '#fff',
+          textDecoration: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 3px 10px rgba(168,85,247,.3)',
+          flexShrink: 0,
+        }}>
+          <Plus size={18} />
         </Link>
 
         {user && (
