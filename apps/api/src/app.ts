@@ -13,7 +13,9 @@ import dietRouter from './routes/diet';
 import eventsRouter from './routes/events';
 import healthRouter from './routes/health';
 import householdRouter from './routes/household';
+import pushRouter from './routes/push';
 import { startNotificationScheduler } from './services/notificationService';
+import { startPushScheduler } from './services/pushScheduler';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -54,6 +56,7 @@ app.use('/api/v1/pets/:petId/diet', dietRouter);
 app.use('/api/v1/pets/:petId/events', eventsRouter);
 app.use('/api/v1/pets/:petId/health', healthRouter);
 app.use('/api/v1/household', householdRouter);
+app.use('/api/v1/push', pushRouter);
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {
@@ -90,6 +93,7 @@ const PORT = parseInt(process.env.PORT ?? '3001', 10);
 app.listen(PORT, () => {
   console.log(`[Server] PetCare API running on port ${PORT}`);
   startNotificationScheduler();
+  startPushScheduler();
 });
 
 export default app;
